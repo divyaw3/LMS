@@ -256,24 +256,33 @@ print("insode if no access token ");
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-       automaticallyImplyLeading: false,
+       //automaticallyImplyLeading: false,
         backgroundColor: Color(maincolor),
-       /* leading: InkResponse(
+       leading: InkResponse(
           child: Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
           ),
+
           onTap: () {
-            Navigator.pop(context);
+            Navigator.of(context).push(new MaterialPageRoute(
+      builder: (BuildContext context) => new LeadlistScreen(),
+    ));
+       //     Navigator.pop(context);
           },
-        ),*/
+        ), 
         centerTitle: true,
         title: Text("Create New Lead"),
       ),
       body: Form(
         key: formKey,
         child: WillPopScope(
-          onWillPop: () async => false,
+       //   onWillPop: () async => false,
+       onWillPop: (){
+            Navigator.of(context).push(new MaterialPageRoute(
+      builder: (BuildContext context) => new LeadlistScreen(),
+    ));
+       },
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -369,6 +378,8 @@ print("insode if no access token ");
                               },*/
                               validator: validateMobile,
                               controller: phone,
+//                              minLines: 10,
+                              maxLength: 10,
                               //  autofocus:true,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
@@ -1053,7 +1064,7 @@ String validateMobile(String value) {
   if (value.length == 0) {
     return "Please enter the Mobile Number";
   } else if (value.length != 10) {
-    return "Mobile number must 11 digits";
+    return "Mobile number must 10 digits";
   } else if (!regExp.hasMatch(value)) {
     return "Mobile Number must be digits";
   }
