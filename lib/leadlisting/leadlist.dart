@@ -20,6 +20,75 @@ class LeadlistScreen extends StatefulWidget {
 
 class _LeadlistScreenState extends State<LeadlistScreen> {
   var leadresponse = [];
+    var lead_source = [];
+  var lead_accountindustries = [];
+   Future getleadsource() async {
+    //http://humbletree.in/lms/api/leadsources
+
+    Uri url = Uri.parse(siteurl + "api/leadsources");
+
+    print(url);
+    print("http://humbletree.in/lms/api/leadsources");
+    final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $accesstoken',
+      });
+    if (response.statusCode == 200) {
+      setState(() {
+        var resBody = json.decode(response.body);
+        for (int i = 0; i < resBody.length; i++) {
+          lead_source.add(
+              //resBody[i]['name']
+              {
+                "name": resBody[i]['name'],
+                "id": resBody[i]['id'],
+              });
+        }
+      });
+
+      print("lead_source id is" + lead_source.toString());
+      print(lead_source.toString());
+      return lead_source;
+    } else {
+      print(json.decode(response.body).toString());
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  Future getleadaccountindustries() async {
+    //http://humbletree.in/lms/api/leadsources
+
+    Uri url = Uri.parse(siteurl + "api/accountindustries");
+
+    print("url&accesstoekn"+url.toString() + '$accesstoken'.toString());
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+         'Authorization': 'Bearer $accesstoken',
+    });
+    if (response.statusCode == 200) {
+      setState(() {
+        var resBody = json.decode(response.body);
+        for (int i = 0; i < resBody.length; i++) {
+          lead_accountindustries.add({
+            "name": resBody[i]['name'],
+            "id": resBody[i]['id'],
+          });
+        }
+      });
+
+      print("lead_accountindustries id is" + lead_accountindustries.toString());
+      print(lead_accountindustries.toString());
+      return lead_accountindustries;
+    } else {
+      print(json.decode(response.body).toString());
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
   String msg = "";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var _leadlist = [];
@@ -69,14 +138,15 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
   }
 
   Future<void> GetAddressFromLatLong(Position position) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+     // List<Placemark> placemarks = await placemarkFromCoordinates(9.925201, 78.119774);
+  
     print("placeplacemarkkkk" + placemarks.toString());
     Placemark place = placemarks[0];
     print("place" + place.toString());
     setState(() {
       Address =
-          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country},${place.administrativeArea}';
     });
     print("address" + Address.toString());
     Navigator.of(context).pushReplacement(new MaterialPageRoute(
@@ -88,6 +158,7 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
               country: '${place.country}',
               lati: position.latitude,
               lang: position.longitude,
+              state : '${place.administrativeArea}',
             )));
   }
 
@@ -175,14 +246,69 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
 
   initState() {
     getleadlist();
-
+getleadaccountindustries();
+getleadsource();
     super.initState();
   }
 
   _showDialog(BuildContext context, _leadlist) {
     print("_leadlist_leadlist" + _leadlist.toString()+_leadlist['name']);
+       if(_leadlist['industry'] == '1'){
+
+setState(() {
+  _leadlist['industry'] = "Catering";
+});
+    }
+    else if(_leadlist['industry'] == '2'){
+setState(() {
+  _leadlist['industry'] = "Events Management";
+});
+    }
+    else if(_leadlist['industry'] == '3'){
+setState(() {
+  _leadlist['industry'] = "Information Technology";
+});
+    }
+    if(_leadlist['source'] == '1'){
+setState(() {
+  _leadlist['source'] = "Referral";
+});
+    }
+    else if(_leadlist['source'] == '2'){
+setState(() {
+  _leadlist['source'] = "Google 0r Yellow Pages";
+});
+    }
+    else if(_leadlist['source'] == '3'){
+setState(() {
+  _leadlist['source'] = "Digital Marketting";
+});
+    }
+    else if(_leadlist['source'] == '4'){
+setState(() {
+  _leadlist['source'] = "Zoho Lead";
+});
+    }
     BlurryDialog alert =
-        BlurryDialog(_leadlist['name'],_leadlist['email'], _leadlist['phone'], _leadlist['title'], _leadlist['website'], _leadlist['lead_address'], _leadlist['lead_city'], _leadlist['lead_state'], _leadlist['lead_country'], _leadlist['lead_postalcode'], _leadlist['status'], _leadlist['source'].toString(), _leadlist['opportunity_amount'].toString(), _leadlist['industry'], _leadlist['description'],);
+        BlurryDialog(
+          _leadlist['name'],
+        _leadlist['email'], 
+        _leadlist['phone'],
+         _leadlist['title'], 
+         _leadlist['website'], 
+         _leadlist['lead_address'],
+          _leadlist['lead_city'],
+           _leadlist['lead_state'],
+            _leadlist['lead_country'],
+ 
+         _leadlist['status'],
+          _leadlist['source'].toString(),
+           _leadlist['opportunity_amount'].toString(), 
+           _leadlist['industry'], 
+           _leadlist['description'],);
+          
+
+
 
     showDialog(
       context: context,
@@ -218,6 +344,9 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
           location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
           GetAddressFromLatLong(position);
         },
+        //9.925201
+        //78.119774
+        
       ),
       key: _scaffoldKey,
       appBar: AppBar(
@@ -411,15 +540,9 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
         key: formKey,
         child: SingleChildScrollView(
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              /*Text(
-                "Lead List",
-                style: TextStyle(
-                    color: Color(maincolor),
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold),
-              ),*/
+               
               Row(
                 children: [
                   Expanded(
@@ -523,7 +646,7 @@ class BlurryDialog extends StatelessWidget {
       this.Status,
       this.Source,
       this.OpportunityAmount,
-      this.Campaign,
+     // this.Campaign,
       this.Industry,
       this.description
       );
@@ -535,179 +658,287 @@ class BlurryDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-        child: AlertDialog(
-          //contentPadding: EdgeInsets.zero,
-
-          // content: new Text('Lead Details',style: textStyle,),
-          title: Container(
-            child: Column(
-              children: [
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Container(child: Row(
-                      children: [
-                        Text("Name  :  ",style: textStyle,),
+        child: SingleChildScrollView(
+          child: AlertDialog(
+            //contentPadding: EdgeInsets.zero,
+        
+            // content: new Text('Lead Details',style: textStyle,),
+            title: Container(
+              child: Column(
+                children: [
+                       Row(
+                  children: [
+                    Expanded(
+                      child: DataTable(
+                        sortColumnIndex: 1,
+                    
+                      columns: <DataColumn>[
+                          DataColumn(
+                            tooltip: "This is Name",
+                            label: Text(
+                              'Name',
+                              style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Color(maincolor)),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              name,
+                              style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Color(maincolor)),
+                            ),
+                          ),
                           
-                        Text( name,style: textStyle,),
-                          
-                      ],
-                    )),
-                  ),
-                ),
-                 Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Email  :  ",style: textStyle,),
-          
-                      Text( email,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Phone  :  ",style: textStyle,),
-          
-                      Text( Phone.toString(),style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Title  :  ",style: textStyle,),
-          
-                      Text( Title,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Website  :  ",style: textStyle,),
-          
-                      Text( Website,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Address  :  ",style: textStyle,),
-          
-                      Flexible
-                      (child: Text( leadAddress,style: textStyle,)),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("City  :  ",style: textStyle,),
-          
-                      Text( City,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("State  :  ",style: textStyle,),
-          
-                      Text( State,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Country  :  ",style: textStyle,),
-          
-                      Text( Country,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Status  :  ",style: textStyle,),
-          
-                      Text(Status,style: textStyle, ),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Source  :  ",style: textStyle,),
-          
-                      Text( Source,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Opportunity_amount  :  ",style: textStyle,),
-          
-                      Text( OpportunityAmount,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Industry  : ",style: textStyle,),
-          
-                      Text( Industry,style: textStyle,),
-          
-                    ],
-                  )),
-                ), Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Container(child: Row(
-                    children: [
-                      Text("Description  : ",style: textStyle,),
-          
-                      Text( description,style: textStyle,),
-          
-                    ],
-                  )),
-                ),
-              ],
+                        ],
+                        
+                        rows: <DataRow>[
+                     //     for (int ij = 0; ij < _leadlist.length; ij++)
+                            DataRow(
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Email'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(email.toString()
+                    
+                     
+                                        ),  ),
+                                
+                              ],
+                            ),
+                               DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Phone'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Phone.toString()
+                    
+                     
+                                        ),  ),
+        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Title'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Title.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Website'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Website.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Lead Address'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(leadAddress.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'City'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(City.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'State'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(State.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Country'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Country.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              
+                              /*DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Status'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Status.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),*/
+                                
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Source'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Source.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Opportunity Amount'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text( defultcurrency +" "+OpportunityAmount.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                              DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'Industry'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Industry.toString()
+                    
+                     
+                                        ),  ),
+                                        
+                                
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              
+                ],
+              ),
             ),
+            // new Text(content, style: textStyle,),
+            actions: <Widget>[
+              new RaisedButton(
+                color: Color(maincolor),
+                child: new Text("Ok" ,style: textStyle1,),
+                onPressed: () {
+                  //  continueCallBack();
+                  Navigator.of(context).pop();
+                },
+              ),
+              new RaisedButton(
+                 color: Color(maincolor),
+                child: Text("Cancel",style: textStyle1,),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
-          // new Text(content, style: textStyle,),
-          actions: <Widget>[
-            new RaisedButton(
-              color: Color(maincolor),
-              child: new Text("Ok" ,style: textStyle1,),
-              onPressed: () {
-                //  continueCallBack();
-                Navigator.of(context).pop();
-              },
-            ),
-            new RaisedButton(
-               color: Color(maincolor),
-              child: Text("Cancel",style: textStyle1,),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         ));
   }
 }

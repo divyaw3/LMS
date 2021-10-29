@@ -9,3 +9,4 @@ const img6 ="assets/images/onb6.jpeg";
 
 const siteurl = "http://humbletree.in/lms/";
 const logo = "https://humbletree.in/lms/storage/uploads/logo/logo.png";
+const defultcurrency = '₹';
