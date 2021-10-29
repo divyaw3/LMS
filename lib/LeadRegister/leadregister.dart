@@ -742,7 +742,7 @@ print("insode if no access token ");
                               },
                               controller: leadstate,
                               //  autofocus:true,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.name,
                               decoration: InputDecoration(
                                  labelText: 'Enter state',
                                 hintText: "Enter state",
@@ -771,7 +771,7 @@ print("insode if no access token ");
                               },
                               controller: leadcountry,
                               //  autofocus:true,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.name,
                               decoration: InputDecoration(
                                  labelText: 'Enter Country',
                                 hintText: "Enter Country",
