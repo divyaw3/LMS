@@ -54,6 +54,7 @@ class _LoginscreenState extends State<Loginscreen> {
         //   leadresponse = json.decode(response.body);
 
         _scaffoldKey.currentState.showSnackBar(SnackBar(
+           backgroundColor: Color(maincolor),
           content: Text("Successfully logged in"),
         ));
         Navigator.of(context).pushReplacement(new MaterialPageRoute(
@@ -71,6 +72,7 @@ class _LoginscreenState extends State<Loginscreen> {
         setState(() {
           //   leadresponse = json.decode(response.body);
           _scaffoldKey.currentState.showSnackBar(SnackBar(
+             backgroundColor: Color(maincolor),
             content: Text(msg.toString()),
           ));
         });
@@ -181,7 +183,7 @@ print("insode if no access token ");
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               //   labelText: "Email",
-                              hintText: "Enter Email",
+                              hintText: "Email",
                               border: InputBorder.none,
                               fillColor: Colors.white,
                             )),
@@ -214,7 +216,7 @@ print("insode if no access token ");
                           obscureText: _isObscure,
                           // keyboardType: TextInputType.visiblePassword,
                           decoration: InputDecoration(
-                            hintText: "Enter Password",
+                            hintText: "Password",
                             border: InputBorder.none,
                             fillColor: Colors.white,
                             suffixIcon: IconButton(
@@ -257,10 +259,12 @@ print("insode if no access token ");
                               password.text,
                             );
                             _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              backgroundColor: Color(maincolor),
                               content: Text("Validate your credentials"),
                             ));
                           } else {
                             _scaffoldKey.currentState.showSnackBar(SnackBar(
+                               backgroundColor: Color(maincolor),
                               content: Text("One or more fields are empty"),
                             ));
                           }

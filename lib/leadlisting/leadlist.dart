@@ -10,6 +10,7 @@ import 'package:ims/LeadRegister/leadregister.dart';
 import 'package:ims/Login/login.dart';
 import 'package:ims/const/constant.dart';
 import 'package:http/http.dart' as http;
+import 'package:ims/leadedit/leadedit.dart';
 import 'package:ims/onboardscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -162,6 +163,65 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
             )));
   }
 
+ Future<void> GetAddressFromLatLong1(Position position, _leadlist) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+     // List<Placemark> placemarks = await placemarkFromCoordinates(9.925201, 78.119774);
+  
+    print("placeplacemarkkkk" + placemarks.toString());
+    Placemark place = placemarks[0];
+    print("place" + place.toString());
+    setState(() {
+      Address =
+          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country},${place.administrativeArea}';
+    });
+    print("address" + Address.toString());
+    Navigator.of(context).pushReplacement(new MaterialPageRoute(
+        builder: (BuildContext context) => new LeadEditscreen(
+  
+    /*
+               "lead_address": resBody[i]['lead_address'],
+              "lead_city": resBody[i]['lead_city'],
+              "lead_state": resBody[i]['lead_state'], 
+              "lead_country": resBody[i]['lead_country'],
+              "lead_postalcode": resBody[i]['lead_postalcode'],
+           
+              "opportunity_amount": resBody[i]['opportunity_amount'],
+              
+            
+             leadaddress.text = widget.street.toString();
+    leadcity.text = widget.locality.toString();
+
+    leadstate.text = widget.state.toString();
+
+    leadcountry.text = widget.country.toString();
+    leadpostalcode.text = widget.postalCode.toString();
+       "id": resBody[i]['id'],
+                 "status": resBody[i]['status'],
+    */
+
+              
+             street:_leadlist["lead_address"] ,
+             id:_leadlist["id"] ,
+status:_leadlist["status"] ,
+              locality: _leadlist["lead_city"],
+              postalCode: _leadlist["lead_postalcode"],
+              country: _leadlist["lead_country"],
+              
+              lati: position.latitude,
+              lang: position.longitude,
+              state : _leadlist["lead_state"],
+              name:  _leadlist["name"],
+              email:  _leadlist["email"],
+              phone: _leadlist["phone"],
+              website:  _leadlist["title"],
+              source:  _leadlist["source"],
+              description:  _leadlist["description"],
+              industry:  _leadlist["industry"],
+              title:  _leadlist["title"],
+                
+            )));
+  }
+
   SharedPreferences sharedPreferences;
   getleadlist() async {
     print("inside getleadlist");
@@ -177,6 +237,8 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
       setState(() {
         loginname = "Logout";
       });
+      getleadaccountindustries();
+getleadsource();
       print("inside else" + accesstoken);
 
       Uri url = Uri.parse(siteurl + "api/leads");
@@ -243,11 +305,11 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
       }
     }
   }
-
+Future a ;
   initState() {
-    getleadlist();
-getleadaccountindustries();
-getleadsource();
+   a= getleadlist();
+  // getleadlist();
+
     super.initState();
   }
 
@@ -319,6 +381,9 @@ setState(() {
   }
   String loginname = "";
 
+  int dynamiccrosscount = 2;
+  double dynamicchildAspectRatio = 1;
+
   Future<void> _signOut() async {
     print("hi insode signout");
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -328,12 +393,22 @@ setState(() {
      
       loginname = "Login";
     });
-    Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => new OnBoardScreen()));
+    Navigator.pushAndRemoveUntil<dynamic>(
+        context,
+        MaterialPageRoute<dynamic>(
+          builder: (BuildContext context) => OnBoardScreen(),
+        ),
+        (route) => false,//if you want to disable back feature set to false
+);
+    /*Navigator.of(context).push(new MaterialPageRoute(
+        builder: (BuildContext context) => new OnBoardScreen()));*/
   }
 
   @override
   Widget build(BuildContext context) {
+        final screenSize = MediaQuery.of(context).size;
+    final screenWidth =
+        screenSize.width / (2 / (screenSize.height / screenSize.width));
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Color(maincolor),
@@ -374,7 +449,7 @@ setState(() {
           },
         ),*/
         centerTitle: true,
-        title: Text("Lead List"),
+        title: Text("Leads List"),
       ),
         drawer: new Drawer(
         child: new ListView(
@@ -429,109 +504,7 @@ setState(() {
               color: Colors.black,
             ),*/
 
-       /*     Visibility(
-              visible: dispfacebook,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WebView(
-                        initialUrl: local_link['Facebook'],
-                        //  title: "Facebook",
-                      ),
-                    ),
-                  );
-                },
-                child: ListTile(
-                  title: Text('Facebook'),
-                  leading: Icon(
-                    FontAwesomeIcons.facebook,
-                  ),
-                ),
-              ),
-            ),
-
-            Visibility(
-              visible: dispinsta,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WebView(
-                        initialUrl: local_link['Instagram'],
-                        //  title: "Facebook",
-                      ),
-                    ),
-                  );
-                },
-                child: ListTile(
-                  title: Text('Instagram'),
-                  leading: Icon(FontAwesomeIcons.instagram),
-                ),
-              ),
-            ),
-            Visibility(
-              visible: dispyoutube,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WebView(
-                        initialUrl: local_link['Youtube'],
-                        //  title: "Facebook",
-                      ),
-                    ),
-                  );
-                },
-                child: ListTile(
-                  title: Text('Youtube'),
-                  leading: Icon(FontAwesomeIcons.youtube),
-                ),
-              ),
-            ),
-            Visibility(
-              visible: disptwitter,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WebView(
-                        initialUrl: local_link['Twitter'],
-                        //  title: "Facebook",
-                      ),
-                    ),
-                  );
-                },
-                child: ListTile(
-                  title: Text('Twitter'),
-                  leading: Icon(FontAwesomeIcons.twitter),
-                ),
-              ),
-            ),
-
-//Orderdetails
-            Divider(
-              color: Colors.black,
-            ),
-
-            InkWell(
-              onTap: () {
-                whatsAppOpen();
-              },
-              child: ListTile(
-                title: Text('How Can I Help You'),
-                leading: Icon(
-                  FontAwesomeIcons.whatsapp,
-                  color: Colors.green,
-                ),
-              ),
-            ),
-*/
-        
+       
           ],
         ),
       ),
@@ -542,8 +515,476 @@ setState(() {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-               
-              Row(
+               FutureBuilder(
+                  //child: FutureBuilder(
+                  future: a,
+                  //  future: getData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+
+                   
+                    return snapshot.hasData == true
+                        ? Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                /*Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                      onTap: () {
+                                        /*    Navigator.of(context).push(
+                                      new MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              new Alleventsscreen()));*/
+                                      },
+                                      child: Container(
+                                          child: Image.network(img,
+                                              height: screenSize.height / 4,
+                                              fit: BoxFit.cover,
+                                              width: screenSize.width))),
+                                ),*/
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                      Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        child: Text("Number of Leads".toString(),  style:
+                                                                          new TextStyle(
+                                                                        fontSize:
+                                                                            18.0,
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),),
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        child: Text(_leadlist.length.toString(),  style:
+                                                                          new TextStyle(
+                                                                        fontSize:
+                                                                            18.0,
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                GridView.builder(
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    //  padding: const EdgeInsets.all(10.0),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: _leadlist.length,
+                                    //  itemCount: data.length,
+                                    gridDelegate:
+                                        new SliverGridDelegateWithFixedCrossAxisCount(
+                                    //  crossAxisCount: dynamiccrosscount,
+                                    crossAxisCount: 2,
+                                      childAspectRatio: MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                          (MediaQuery.of(context).size.height /
+                                              1.25),
+                                      mainAxisSpacing: 10.0,
+                                
+                                      crossAxisSpacing: 10.0,
+                                      //childAspectRatio: (2/ 2.3),
+                                      // childAspectRatio: dynamicchildAspectRatio,
+                                      // childAspectRatio: MediaQuery.of(context).size.width /  (MediaQuery.of(context).size.height /2.0),
+                                      //  mainAxisSpacing: 10.0,
+                                      // crossAxisSpacing: 10.0,
+                                    ), //itemBuilder: null
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                     
+                                      //   Navigator.pop(context);
+                                             if(_leadlist[index]['industry'] == '1'){
+
+//setState(() {
+  _leadlist[index]['industry'] = "Catering";
+//});
+    }
+    else if(_leadlist[index]['industry'] == '2'){
+//setState(() {
+  _leadlist[index]['industry'] = "Events Management";
+//});
+    }
+    else if(_leadlist[index]['industry'] == '3'){
+//setState(() {
+  _leadlist[index]['industry'] = "Information Technology";
+//});
+    }
+    if(_leadlist[index]['source'] == '1'){
+//setState(() {
+  _leadlist[index]['source'] = "Referral";
+//});
+    }
+    else if(_leadlist[index]['source'] == '2'){
+//setState(() {
+  _leadlist[index]['source'] = "Google 0r Yellow Pages";
+//});
+    }
+    else if(_leadlist[index]['source'] == '3'){
+//setState(() {
+  _leadlist[index]['source'] = "Digital Marketting";
+//});
+    }
+    else if(_leadlist[index]['source'] == '4'){
+//setState(() {
+  _leadlist[index]['source'] = "Zoho Lead";
+//});
+    }
+                                      return new GestureDetector(
+                                         onTap: () {
+                                                  
+                                                },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: Card(
+                                            elevation: 4.0,
+                                            child: GestureDetector(
+                                             
+                                            child: new Container(
+                                             
+                                            child: Column(
+                                              
+                                              children: <Widget>[
+                                                Container(
+                                                  
+                                                  child: Row(
+                                                     mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .center,
+                                              crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .center,
+                                                    children: [
+                                                   //   SizedBox(height: 45.0,),
+                                                      Padding(
+                                                      //  padding:  const EdgeInsets .all(  20.0),
+
+                                                         padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 10.0),
+                                                        child: Center(
+                                                          child: Container(
+                                                            //  decoration: BoxDecoration(border: Border.all(color: Color(maincolor))),
+                                                              child: CircleAvatar(
+                                                                backgroundColor: Color(maincolor),
+                                    child: Text( "${_leadlist[index]['name'][0]}".toUpperCase(),style: TextStyle(color: Colors.white),))),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Padding(
+                                                   padding:
+                                                      const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                                                  child: Container(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                         Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Icon(
+                                      
+                                      FontAwesomeIcons.user,
+                                      color:Color(maincolor),
+                                      size:15.0,
+                                      ),
+                                  ),
+                                                        Expanded(
+                                                          child:
+                                                              Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                    2.0),
+                                                            child: Text(
+                                                              //   "hai",
+                                                           //  _leadlist[ij]['name'].toString(),
+                                                              "${_leadlist[index]['name']}",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              // softWrap: false,
+                                                              style:
+                                                                  new TextStyle(
+                                                                fontSize:
+                                                                    15.0,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                                                  child: Container(
+
+                                                    child:    Row(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Icon(
+                                      
+                                      FontAwesomeIcons.envelopeSquare,
+                                      color:Color(maincolor),
+                                      size:15.0,
+                                      ),
+                                  ),
+                                    SizedBox(width: 2.0,),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Text(   "${_leadlist[index]['email']}", 
+                                                                      style:
+                                                                  new TextStyle(
+                                                                fontSize:
+                                                                    15.0,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
+                                                                       ),
+                                        ),
+                                      ),
+                                ],),
+                                
+                                                    
+                                                  /*   Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Expanded(
+                                                          child:
+                                                              Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                    5.0),
+                                                            child: Text(
+                                                              
+                                                                  " " +
+                                                                  "${_leadlist[index]['email']}",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              // softWrap: false,
+                                                              style:
+                                                                  new TextStyle(
+                                                                fontSize:
+                                                                    13.0,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                */
+                                                  ),
+                                                ),
+                                                 Padding(
+                                                   padding:
+                                                      const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                                                  child: Container(
+
+                                                    child:    Row(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Icon(
+                                      
+                                      FontAwesomeIcons.mobile,
+                                      color:Color(maincolor),
+                                      size:15.0,
+                                      ),
+                                  ),
+                                    SizedBox(width: 2.0,),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Text(   "${_leadlist[index]['phone']}", 
+                                                                       style:
+                                                                  new TextStyle(
+                                                                fontSize:
+                                                                    15.0,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
+                                                                       ),
+                                        ),
+                                      ),
+                                ],),
+                                
+                                                    
+                                                   
+                                                  ),
+                                                ),
+                                             
+                                            Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                                                  child: Container(
+
+                                                    child:    Row(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Icon(
+                                      
+                                      FontAwesomeIcons.industry,
+                                      color:Color(maincolor),
+                                      size:15.0,
+                                      ),
+                                  ),
+                                    SizedBox(width: 2.0,),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Text(    _leadlist[index]['industry'], 
+                                                                       style:
+                                                                  new TextStyle(
+                                                                fontSize:
+                                                                    15.0,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
+                                                                       ),
+                                        ),
+                                      ),
+                                ],),
+                                
+                                                    
+                                                   
+                                                  ),
+                                                ),
+                                            Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                                                  child: Container(
+
+                                                    child:    Row(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Icon(
+                                      
+                                      FontAwesomeIcons.city,
+                                      color:Color(maincolor),
+                                      size:15.0,
+                                      ),
+                                  ),
+                                    SizedBox(width: 2.0,),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Text(    _leadlist[index]['lead_city'], 
+                                                                       style:
+                                                                  new TextStyle(
+                                                                fontSize:
+                                                                    15.0,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
+                                                                       ),
+                                        ),
+                                      ),
+                                ],),
+                                
+                                                    
+                                                   
+                                                  ),
+                                                ),
+Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                                                  child: Container(
+
+                                                    child:    Row(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: FlatButton(onPressed: 
+                                    () async {
+Position position = await _getGeoLocationPosition();
+          location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
+          GetAddressFromLatLong1(position, _leadlist[index]);
+                                    }, child: Text("Edit"))
+                                  ),
+                                    SizedBox(width: 2.0,),
+                                      Flexible(
+                                        child:  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: FlatButton(onPressed: 
+                                    (){
+  _showDialog(context, _leadlist[index]);
+                                    }, child: Text("View"))
+                                  ),
+                                      ),
+                                ],),
+                                
+                                                    
+                                                   
+                                                  ),
+                                                ),
+                                                                                          
+                                              ],
+                                            ),
+                                            ),
+                                            ),
+                                          ),
+                                        ),
+                                        
+                                      );
+                                    }),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 150.0,
+                              ),
+                              new Center(
+                                child: new CircularProgressIndicator(),
+                              ),
+                            ],
+                          );
+                  },
+                ),
+         
+              /*Row(
                 children: [
                   Expanded(
                     child: DataTable(
@@ -605,6 +1046,7 @@ setState(() {
                   ),
                 ],
               )
+            */
             ],
           ),
         ),

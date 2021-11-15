@@ -5,6 +5,8 @@ import 'package:geocoder/geocoder.dart';
 import 'package:ims/Login/login.dart';
 import 'package:ims/LeadRegister/leadregister.dart';
 import 'package:ims/const/constant.dart';
+import 'package:ims/leadlisting/leadlist.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 
 class OnBoardScreen extends StatefulWidget {
@@ -14,7 +16,8 @@ class OnBoardScreen extends StatefulWidget {
 
 class _OnBoardScreenState extends State<OnBoardScreen> {
   var accesstoken;
-  /* SharedPreferences sharedPreferences;
+  SharedPreferences sharedPreferences;
+  /* 
 
       checkaccesstoken()  async {
      sharedPreferences = await SharedPreferences.getInstance();
@@ -37,9 +40,32 @@ print("insode if no access token ");
 
   }
 */
+var buttonname ="";
+   checkaccesstoken()  async {
+     sharedPreferences = await SharedPreferences.getInstance();
+       accesstoken = sharedPreferences.getString("access_token") ?? "_";
+    print("accesstoken"+accesstoken);
+    if(accesstoken=="_"){
+print("insode if no access token ");
+setState(() {
+  buttonname ="Sign In";
+});
+
+    }
+    else{
+      print("inside else"+accesstoken);
+      setState(() {
+  buttonname ="Lead";
+});
+    /*Navigator.of(context).pushReplacement(new MaterialPageRoute(
+      builder: (BuildContext context) => new LeadlistScreen(),
+    ));*/
+    }
+
+  }
 
   void initState() {
-    //checkaccesstoken();
+    checkaccesstoken();
     super.initState();
   }
 
@@ -230,10 +256,21 @@ print("insode if no access token ");
                   color: Color(maincolor),
                   child: TextButton(
                     onPressed: () {
-                        Navigator.of(context).push(new MaterialPageRoute(
+                      if(buttonname == "Sign In"){
+                        print(buttonname.toString());
+ Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) => new Loginscreen(
                         
-                          )));
+                          ))
+                          );
+                      }
+                      else if(buttonname == "Lead") {
+                        print(buttonname.toString());
+Navigator.of(context).pushReplacement(new MaterialPageRoute(
+      builder: (BuildContext context) => new LeadlistScreen(),
+    ));
+                      }
+                       
                     },
                     child: Container(
                                           //decoration: BoxDecoration(borderRadius: BorderRadius.circular(30.0)),
@@ -244,7 +281,7 @@ print("insode if no access token ");
                           BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
                       alignment: Alignment.center,
                       child: Text(
-                        "Sign In",
+                      buttonname,
                         textAlign: TextAlign.center,
                         style:
                             TextStyle(color: Colors.white, fontSize: 15),
