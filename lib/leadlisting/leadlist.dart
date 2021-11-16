@@ -314,7 +314,34 @@ Future a ;
   }
 
   _showDialog(BuildContext context, _leadlist) {
+
     print("_leadlist_leadlist" + _leadlist.toString()+_leadlist['name']);
+
+    if (_leadlist['status']== "0") {
+      setState(() {
+       _leadlist['status'] = "New";
+      });
+    } else if (_leadlist['status']== "1") {
+      setState(() {
+        _leadlist['status'] = "Assigned";
+      });
+    } else if (_leadlist['status']== "2") {
+      setState(() {
+        _leadlist['status'] = "In Process";
+      });
+    } else if (_leadlist['status'] == "3") {
+      setState(() {
+       _leadlist['status'] = "Converted";
+      });
+    } else if (_leadlist['status'] == "4") {
+      setState(() {
+       _leadlist['status'] = "Recycled";
+      });
+    } else if (_leadlist['status'] == "5") {
+      setState(() {
+        _leadlist['status'] = "Dead";
+      });
+    }
        if(_leadlist['industry'] == '1'){
 
 setState(() {
@@ -651,7 +678,8 @@ setState(() {
                                         child: Padding(
                                           padding: const EdgeInsets.all(3.0),
                                           child: Card(
-                                            elevation: 4.0,
+                                     //  color: Color(crd_color),
+                                            elevation: 6.0,
                                             child: GestureDetector(
                                              
                                             child: new Container(
@@ -670,7 +698,8 @@ setState(() {
                                                         .center,
                                                     children: [
                                                    //   SizedBox(height: 45.0,),
-                                                      Padding(
+                                                     if ("${_leadlist[index]['name'][0]}".toUpperCase() == "S") 
+                      Padding(
                                                       //  padding:  const EdgeInsets .all(  20.0),
 
                                                          padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 10.0),
@@ -678,10 +707,78 @@ setState(() {
                                                           child: Container(
                                                             //  decoration: BoxDecoration(border: Border.all(color: Color(maincolor))),
                                                               child: CircleAvatar(
-                                                                backgroundColor: Color(maincolor),
-                                    child: Text( "${_leadlist[index]['name'][0]}".toUpperCase(),style: TextStyle(color: Colors.white),))),
+                                                                backgroundColor: Colors.red,
+                                                                //Color(maincolor),
+                                    child: Text( "${_leadlist[index]['name'][0]}".toUpperCase(),
+                                    style: TextStyle(color: Colors.white),))),
                                                         ),
                                                       ),
+                  if("${_leadlist[index]['name'][0]}".toUpperCase() == "A" || "${_leadlist[index]['name'][0]}".toUpperCase() == "D" || "${_leadlist[index]['name'][0]}".toUpperCase() == "B" || "${_leadlist[index]['name'][0]}".toUpperCase() == "C")
+                                                  Padding(
+                                                      //  padding:  const EdgeInsets .all(  20.0),
+
+                                                         padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 10.0),
+                                                        child: Center(
+                                                          child: Container(
+                                                            //  decoration: BoxDecoration(border: Border.all(color: Color(maincolor))),
+                                                              child: CircleAvatar(
+                                                                backgroundColor: Colors.teal,
+                                                                //Color(maincolor),
+                                    child: Text( "${_leadlist[index]['name'][0]}".toUpperCase(),
+                                    style: TextStyle(color: Colors.white),))),
+                                                        ),
+                                                      ),
+                                                 if("${_leadlist[index]['name'][0]}".toUpperCase() == "E" || "${_leadlist[index]['name'][0]}".toUpperCase() == "F" || "${_leadlist[index]['name'][0]}".toUpperCase() == "G" || "${_leadlist[index]['name'][0]}".toUpperCase() == "H"
+                                                ||  "${_leadlist[index]['name'][0]}".toUpperCase() == "I" || "${_leadlist[index]['name'][0]}".toUpperCase() == "J" || "${_leadlist[index]['name'][0]}".toUpperCase() == "K" || "${_leadlist[index]['name'][0]}".toUpperCase() == "L"
+                                                 )
+                                                  Padding(
+                                                      //  padding:  const EdgeInsets .all(  20.0),
+
+                                                         padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 10.0),
+                                                        child: Center(
+                                                          child: Container(
+                                                            //  decoration: BoxDecoration(border: Border.all(color: Color(maincolor))),
+                                                              child: CircleAvatar(
+                                                                backgroundColor: Colors.pink,
+                                                                //Color(maincolor),
+                                    child: Text( "${_leadlist[index]['name'][0]}".toUpperCase(),
+                                    style: TextStyle(color: Colors.white),))),
+                                                        ),
+                                                      ),
+                                                        if("${_leadlist[index]['name'][0]}".toUpperCase() == "M" || "${_leadlist[index]['name'][0]}".toUpperCase() == "O" || "${_leadlist[index]['name'][0]}".toUpperCase() == "Q" 
+                                                ||  "${_leadlist[index]['name'][0]}".toUpperCase() == "N" || "${_leadlist[index]['name'][0]}".toUpperCase() == "P" || "${_leadlist[index]['name'][0]}".toUpperCase() == "R" || "${_leadlist[index]['name'][0]}".toUpperCase() == "T"
+                                                 )
+                                                  Padding(
+                                                      //  padding:  const EdgeInsets .all(  20.0),
+
+                                                         padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 10.0),
+                                                        child: Center(
+                                                          child: Container(
+                                                            //  decoration: BoxDecoration(border: Border.all(color: Color(maincolor))),
+                                                              child: CircleAvatar(
+                                                                backgroundColor: Colors.orange,
+                                                                //Color(maincolor),
+                                    child: Text( "${_leadlist[index]['name'][0]}".toUpperCase(),
+                                    style: TextStyle(color: Colors.white),))),
+                                                        ),
+                                                      ),   
+                                                           if("${_leadlist[index]['name'][0]}".toUpperCase() == "U" || "${_leadlist[index]['name'][0]}".toUpperCase() == "W" || "${_leadlist[index]['name'][0]}".toUpperCase() == "Y" ||  
+                                                 "${_leadlist[index]['name'][0]}".toUpperCase() == "V" || "${_leadlist[index]['name'][0]}".toUpperCase() == "X" || "${_leadlist[index]['name'][0]}".toUpperCase() == "Z"  
+                                                 )
+                                                  Padding(
+                                                      //  padding:  const EdgeInsets .all(  20.0),
+
+                                                         padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 10.0),
+                                                        child: Center(
+                                                          child: Container(
+                                                            //  decoration: BoxDecoration(border: Border.all(color: Color(maincolor))),
+                                                              child: CircleAvatar(
+                                                                backgroundColor: Colors.orange,
+                                                                //Color(maincolor),
+                                    child: Text( "${_leadlist[index]['name'][0]}".toUpperCase(),
+                                    style: TextStyle(color: Colors.white),))),
+                                                        ),
+                                                      ),         
                                                     ],
                                                   ),
                                                 ),
@@ -723,7 +820,7 @@ setState(() {
                                                               style:
                                                                   new TextStyle(
                                                                 fontSize:
-                                                                    15.0,
+                                                                    13.0,
                                                                 color: Colors
                                                                     .black,
                                                                 fontWeight:
@@ -747,8 +844,7 @@ setState(() {
                                     child: Icon(
                                       
                                       FontAwesomeIcons.envelopeSquare,
-                                      color:Color(maincolor),
-                                      size:15.0,
+ color: Colors.black,                                     size:15.0,
                                       ),
                                   ),
                                     SizedBox(width: 2.0,),
@@ -759,9 +855,9 @@ setState(() {
                                                                       style:
                                                                   new TextStyle(
                                                                 fontSize:
-                                                                    15.0,
-                                                                color: Colors
-                                                                    .black,
+                                                                    13.0,
+                                                        //  color: Color(text_color),
+                                                           color: Colors.black,
                                                                 fontWeight:
                                                                     FontWeight.bold,
                                                               ),
@@ -821,7 +917,9 @@ setState(() {
                                     child: Icon(
                                       
                                       FontAwesomeIcons.mobile,
-                                      color:Color(maincolor),
+                                      //color:Color(maincolor),
+                                     //  color: Color(text_color),
+                                            color: Colors.black,
                                       size:15.0,
                                       ),
                                   ),
@@ -833,9 +931,10 @@ setState(() {
                                                                        style:
                                                                   new TextStyle(
                                                                 fontSize:
-                                                                    15.0,
-                                                                color: Colors
-                                                                    .black,
+                                                                    13.0,
+                                                                    color: Colors.black,
+                                                                   //  color: Color(text_color),
+                                                              //  color: Colors .black,
                                                                 fontWeight:
                                                                     FontWeight.bold,
                                                               ),
@@ -860,8 +959,9 @@ setState(() {
                                     child: Icon(
                                       
                                       FontAwesomeIcons.industry,
-                                      color:Color(maincolor),
-                                      size:15.0,
+                                    //  color:Color(maincolor),
+                               color: Colors.black,
+                                      size:13.0,
                                       ),
                                   ),
                                     SizedBox(width: 2.0,),
@@ -872,9 +972,8 @@ setState(() {
                                                                        style:
                                                                   new TextStyle(
                                                                 fontSize:
-                                                                    15.0,
-                                                                color: Colors
-                                                                    .black,
+                                                                    13.0,
+                                                                color: Colors.black,
                                                                 fontWeight:
                                                                     FontWeight.bold,
                                                               ),
@@ -898,7 +997,8 @@ setState(() {
                                     child: Icon(
                                       
                                       FontAwesomeIcons.city,
-                                      color:Color(maincolor),
+                                      color: Colors.black,
+                                     // color:Color(maincolor),
                                       size:15.0,
                                       ),
                                   ),
@@ -910,9 +1010,9 @@ setState(() {
                                                                        style:
                                                                   new TextStyle(
                                                                 fontSize:
-                                                                    15.0,
-                                                                color: Colors
-                                                                    .black,
+                                                                    13.0,
+                                                                    color: Colors.black,
+                                                              //  color: Colors .black,
                                                                 fontWeight:
                                                                     FontWeight.bold,
                                                               ),
@@ -925,29 +1025,50 @@ setState(() {
                                                    
                                                   ),
                                                 ),
-Padding(
+                                                SizedBox(height: 15.0,),
+                                                Padding(
                                                   padding:
                                                       const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
                                                   child: Container(
 
                                                     child:    Row(children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: FlatButton(onPressed: 
-                                    () async {
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      height: 30.0,
+                                      width: 90.0,
+                                      color: Color(lightcolor),
+                                      child: FlatButton(onPressed: 
+                                      () async {
 Position position = await _getGeoLocationPosition();
           location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
           GetAddressFromLatLong1(position, _leadlist[index]);
-                                    }, child: Text("Edit"))
+                                      }, child: Text("Edit",
+                                         style: TextStyle(
+                               // fontStyle: FontStyle.italic,
+                                color: Colors.white),
+                        
+                                      )),
+                                    )
                                   ),
-                                    SizedBox(width: 2.0,),
+                                   // SizedBox(width: 2.0,),
                                       Flexible(
                                         child:  Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: FlatButton(onPressed: 
-                                    (){
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                           height: 30.0,
+                                      width: 90.0,
+                                      color: Color(lightcolor),
+                                      child: FlatButton(onPressed: 
+                                      (){
   _showDialog(context, _leadlist[index]);
-                                    }, child: Text("View"))
+                                      }, child: Text("View",
+                                       style: TextStyle(
+                               // fontStyle: FontStyle.italic,
+                                color: Colors.white),
+                                      
+                                      )),
+                                    )
                                   ),
                                       ),
                                 ],),
@@ -956,7 +1077,7 @@ Position position = await _getGeoLocationPosition();
                                                    
                                                   ),
                                                 ),
-                                                                                          
+                                          
                                               ],
                                             ),
                                             ),
@@ -1349,7 +1470,27 @@ class BlurryDialog extends StatelessWidget {
                     
                      
                                         ),  ),
-                                        
+
+                                    //_leadlist['status']     
+                                
+                              ],
+                            ),
+                                       DataRow(
+        
+                              cells: <DataCell>[
+                                DataCell(
+                                    Text(
+                                     'status'
+                                    ),
+                                    //   showEditIcon: true,
+                                       ),
+                                DataCell(
+                                    Text(Status  .toString()
+                    
+                     
+                                        ),  ),
+
+                                    //_leadlist['status']     
                                 
                               ],
                             ),
