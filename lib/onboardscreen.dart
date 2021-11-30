@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ims/Login/login.dart';
 import 'package:ims/LeadRegister/leadregister.dart';
 import 'package:ims/const/constant.dart';
@@ -42,9 +44,13 @@ print("insode if no access token ");
 */
 var buttonname ="";
    checkaccesstoken()  async {
+     Position position = await _getGeoLocationPosition();
+          location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
+        //  GetAddressFromLatLong(position);
      sharedPreferences = await SharedPreferences.getInstance();
        accesstoken = sharedPreferences.getString("access_token") ?? "_";
     print("accesstoken"+accesstoken);
+
     if(accesstoken=="_"){
 print("insode if no access token ");
 setState(() {
@@ -63,9 +69,76 @@ setState(() {
     }
 
   }
+  String location = 'Null, Press Button';
+  String Address = 'search';
+
+  Future<Position> _getGeoLocationPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  Future<void> GetAddressFromLatLong(Position position) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    print("placeplacemarkkkk" + placemarks.toString());
+    Placemark place = placemarks[0];
+    print("place" + place.toString());
+    setState(() {
+      Address =
+          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country},${place.administrativeArea}';
+    });
+    print("address" + Address.toString());
+    Navigator.of(context).pushReplacement(new MaterialPageRoute(
+        builder: (BuildContext context) => new LeadRegisterscreen(
+              street: '${place.street}',
+              subLocality: '${place.subLocality}',
+              locality: '${place.locality}',
+              postalCode: '${place.postalCode}',
+              country: '${place.country}',
+              lati: position.latitude,
+              lang: position.longitude,
+              state: '${place.administrativeArea}',
+            )));
+  }
 
   void initState() {
     checkaccesstoken();
+         
     super.initState();
   }
 

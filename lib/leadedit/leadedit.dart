@@ -198,17 +198,17 @@ class _LeadEditscreenState extends State<LeadEditscreen> {
             fid.toString() +
             fstatus.toString());
     if (fstatus == "New") {
-      fstatus = 1;
+      fstatus = 0;
     } else if (fstatus == "Assigned") {
-      fstatus = 2;
+      fstatus = 1;
     } else if (fstatus == "In Process") {
-      fstatus = 3;
+      fstatus = 2;
     } else if (fstatus == "Converted") {
-      fstatus = 4;
+      fstatus = 3;
     } else if (fstatus == "Recycled") {
-      fstatus = 5;
+      fstatus = 4;
     } else if (fstatus == "Dead") {
-      fstatus = 6;
+      fstatus = 5;
     }
     if (widget.source == "Referral") {
       fsource = 1;
@@ -343,27 +343,27 @@ class _LeadEditscreenState extends State<LeadEditscreen> {
         widget.street);*/
     print("widget.statuswidget.status" + widget.status.toString());
     super.initState();
-    if (widget.status == "1") {
+    if (widget.status == "0") {
       setState(() {
         widget.status = "New";
       });
-    } else if (widget.status == "2") {
+    } else if (widget.status == "1") {
       setState(() {
         widget.status = "Assigned";
       });
-    } else if (widget.status == "3") {
+    } else if (widget.status == "2") {
       setState(() {
         widget.status = "In Process";
       });
-    } else if (widget.status == "4") {
+    } else if (widget.status == "3") {
       setState(() {
         widget.status = "Converted";
       });
-    } else if (widget.status == "5") {
+    } else if (widget.status == "4") {
       setState(() {
         widget.status = "Recycled";
       });
-    } else if (widget.status == "6") {
+    } else if (widget.status == "5") {
       setState(() {
         widget.status = "Dead";
       });

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class LeadRegisterscreen extends StatefulWidget {
-  var street, subLocality, locality, postalCode, country,lati,lang,state;
+  var street, subLocality, locality, postalCode, country, lati, lang, state;
   @override
   //Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
 
@@ -21,8 +21,7 @@ class LeadRegisterscreen extends StatefulWidget {
       this.lang,
       this.lati,
       this.subLocality,
-      this.state
-      });
+      this.state});
   @override
   _LeadRegisterscreenState createState() => _LeadRegisterscreenState();
 }
@@ -34,7 +33,7 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var lead_source = [];
   var lead_accountindustries = [];
-   Future getleadsource() async {
+  Future getleadsource() async {
     //http://humbletree.in/lms/api/leadsources
 
     Uri url = Uri.parse(siteurl + "api/leadsources");
@@ -42,10 +41,10 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
     print(url);
     print("http://humbletree.in/lms/api/leadsources");
     final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $accesstoken',
-      });
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accesstoken',
+    });
     if (response.statusCode == 200) {
       setState(() {
         var resBody = json.decode(response.body);
@@ -74,11 +73,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
 
     Uri url = Uri.parse(siteurl + "api/accountindustries");
 
-    print("url&accesstoekn"+url.toString() + '$accesstoken'.toString());
+    print("url&accesstoekn" + url.toString() + '$accesstoken'.toString());
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-         'Authorization': 'Bearer $accesstoken',
+      'Authorization': 'Bearer $accesstoken',
     });
     if (response.statusCode == 200) {
       setState(() {
@@ -134,8 +133,8 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
 
     var response = await http.post(url, headers: {
       //  'Content-type': 'application/json',
-   //   'Accept': 'application/json',
-        'Authorization': 'Bearer $accesstoken',
+      //   'Accept': 'application/json',
+      'Authorization': 'Bearer $accesstoken',
     },
         //  headers: {"Accept": "application/json"},
         body: {
@@ -152,8 +151,8 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
           "source": fsource.toString(),
           "industry": findustry.toString(),
           "description": fdescription.toString(),
-          "location_longitude":widget.lang.toString(),
-          "location_latitude":widget.lati.toString()
+          "location_longitude": widget.lang.toString(),
+          "location_latitude": widget.lati.toString()
         });
     print("responseeee");
     print(response.body.toString());
@@ -165,11 +164,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
         //   leadresponse = json.decode(response.body);
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text("Lead created successfully"),
-           backgroundColor: Color(maincolor),
+          backgroundColor: Color(maincolor),
         ));
-         Navigator.of(context).push(new MaterialPageRoute(
-      builder: (BuildContext context) => new LeadlistScreen(),
-    ));
+        Navigator.of(context).push(new MaterialPageRoute(
+          builder: (BuildContext context) => new LeadlistScreen(),
+        ));
       });
 
       print("create sucessfully");
@@ -185,7 +184,7 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
         setState(() {
           //   leadresponse = json.decode(response.body);
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-             backgroundColor: Color(maincolor),
+            backgroundColor: Color(maincolor),
             content: Text(msg.toString()),
           ));
         });
@@ -212,26 +211,22 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
   TextEditingController description = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
-    SharedPreferences sharedPreferences;
-var accesstoken ;
-  checkaccesstoken()  async {
-     sharedPreferences = await SharedPreferences.getInstance();
-       accesstoken = sharedPreferences.getString("access_token") ?? "_";
-    print("accesstoken"+accesstoken);
-    if(accesstoken=="_"){
-print("insode if no access token ");
-
-
-    }
-    else{
-      print("inside else"+accesstoken);
-          getleadsource();
-    getleadaccountindustries();
-  /*  Navigator.of(context).push(new MaterialPageRoute(
+  SharedPreferences sharedPreferences;
+  var accesstoken;
+  checkaccesstoken() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    accesstoken = sharedPreferences.getString("access_token") ?? "_";
+    print("accesstoken" + accesstoken);
+    if (accesstoken == "_") {
+      print("insode if no access token ");
+    } else {
+      print("inside else" + accesstoken);
+      getleadsource();
+      getleadaccountindustries();
+      /*  Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) => new LeadlistScreen(),
     ));*/
     }
-
   }
 
   void initState() {
@@ -258,39 +253,38 @@ print("insode if no access token ");
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-       //automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         backgroundColor: Color(maincolor),
-       leading: InkResponse(
+        leading: InkResponse(
           child: Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
           ),
-
           onTap: () {
             Navigator.of(context).push(new MaterialPageRoute(
-      builder: (BuildContext context) => new LeadlistScreen(),
-    ));
-       //     Navigator.pop(context);
+              builder: (BuildContext context) => new LeadlistScreen(),
+            ));
+            //     Navigator.pop(context);
           },
-        ), 
+        ),
         centerTitle: true,
         title: Text("Create New Lead"),
       ),
       body: Form(
         key: formKey,
         child: WillPopScope(
-       //   onWillPop: () async => false,
-       onWillPop: (){
+          //   onWillPop: () async => false,
+          onWillPop: () {
             Navigator.of(context).push(new MaterialPageRoute(
-      builder: (BuildContext context) => new LeadlistScreen(),
-    ));
-       },
+              builder: (BuildContext context) => new LeadlistScreen(),
+            ));
+          },
           child: Center(
             child: SingleChildScrollView(
               child: Column(
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                 /* Text(
+                  /* Text(
                     "Create New Lead",
                     style: TextStyle(
                         color: Color(maincolor),
@@ -318,7 +312,7 @@ print("insode if no access token ");
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                  labelText: 'Name',
+                                labelText: 'Name',
                                 //   labelText: "Email",
                                 hintText: "Name",
                                 border: InputBorder.none,
@@ -352,7 +346,7 @@ print("insode if no access token ");
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                 labelText: 'Email',
+                                labelText: 'Email',
                                 //   labelText: "Email",
                                 hintText: "Email",
                                 border: InputBorder.none,
@@ -383,10 +377,10 @@ print("insode if no access token ");
 //                              minLines: 10,
                               maxLength: 10,
                               //  autofocus:true,
-                            //  keyboardType: TextInputType.number,
+                              //  keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 //   labelText: "Email",
-                                 labelText: 'Phone',
+                                labelText: 'Phone',
                                 hintText: "Phone",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -415,7 +409,7 @@ print("insode if no access token ");
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                 labelText: 'Title',
+                                labelText: 'Title',
                                 hintText: "Title",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -435,16 +429,16 @@ print("insode if no access token ");
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
-                              validator: (value) {
+                              /*validator: (value) {
                                 if (value.isEmpty) {
                                   return "Please enter website";
                                 }
-                              },
+                              },*/
                               controller: website,
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                 labelText: 'Website',
+                                labelText: 'Website',
                                 hintText: "Website",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -473,7 +467,7 @@ print("insode if no access token ");
                               //  autofocus:true,
                               keyboardType: TextInputType.streetAddress,
                               decoration: InputDecoration(
-                                 labelText: 'Lead Address',
+                                labelText: 'Lead Address',
                                 hintText: "Lead Address",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -482,7 +476,7 @@ print("insode if no access token ");
                       ),
                     ),
                   ),
-                 Padding(
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       child: Card(
@@ -502,7 +496,7 @@ print("insode if no access token ");
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                 labelText: 'City',
+                                labelText: 'City',
                                 hintText: "City",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -725,8 +719,8 @@ print("insode if no access token ");
                     ),
                   ),
                 */
-                
-                 Padding(
+
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       child: Card(
@@ -746,7 +740,7 @@ print("insode if no access token ");
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                 labelText: 'State',
+                                labelText: 'State',
                                 hintText: "State",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -755,7 +749,7 @@ print("insode if no access token ");
                       ),
                     ),
                   ),
-               Padding(
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       child: Card(
@@ -775,7 +769,7 @@ print("insode if no access token ");
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                 labelText: 'Country',
+                                labelText: 'Country',
                                 hintText: "Country",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -784,7 +778,7 @@ print("insode if no access token ");
                       ),
                     ),
                   ),
-              Padding(
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       child: Card(
@@ -795,16 +789,17 @@ print("insode if no access token ");
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
-                              validator: (value) {
+                              /* validator: (value) {
                                 if (value.isEmpty) {
                                   return "Please enter postal code";
                                 }
-                              },
+                              },*/
+
                               controller: leadpostalcode,
                               //  autofocus:true,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                 labelText: 'Postal code',
+                                labelText: 'Postal code',
                                 hintText: "Postal code",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -813,7 +808,6 @@ print("insode if no access token ");
                       ),
                     ),
                   ),
-                   
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -826,7 +820,7 @@ print("insode if no access token ");
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownButtonFormField<String>(
                               decoration: InputDecoration(
-                              //   labelText: 'Choose source ',
+                                  //   labelText: 'Choose source ',
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.grey[200]))),
@@ -849,7 +843,7 @@ print("insode if no access token ");
                                   //
                                   //  value: value['slug'].toString()
                                 );
-        
+
                                 // }
                               }).toList(),
                               validator: (value) => value == null
@@ -857,10 +851,10 @@ print("insode if no access token ");
                                   : null,
                               onChanged: (newValue) {
                                 source.text = newValue.toString();
-                                      FocusScope.of(context).requestFocus(FocusNode());
-
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
                               }),
-        
+
                           /*TextFormField(
                               validator: (value) {
                                 if (value.isEmpty) {
@@ -890,9 +884,8 @@ print("insode if no access token ");
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownButtonFormField<String>(
-                            
                               decoration: InputDecoration(
-                                // labelText: 'Choose Industries',
+                                  // labelText: 'Choose Industries',
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.grey[200]))),
@@ -903,10 +896,9 @@ print("insode if no access token ");
                                   .map<DropdownMenuItem<String>>((value) {
                                 //    print("newMap of onchanged" + newMap .toString());
                                 return DropdownMenuItem<String>(
-                                  
                                   child: Text(
                                     value['name'].toString(),
-                                   // FocusScope.of(context).requestFocus(new FocusNode());
+                                    // FocusScope.of(context).requestFocus(new FocusNode());
 
                                     style: TextStyle(
                                         fontSize: 15.0, color: Colors.black
@@ -918,7 +910,7 @@ print("insode if no access token ");
                                   //
                                   //  value: value['slug'].toString()
                                 );
-        
+
                                 // }
                               }).toList(),
                               validator: (value) => value == null
@@ -926,10 +918,10 @@ print("insode if no access token ");
                                   : null,
                               onChanged: (newValue) {
                                 industry.text = newValue.toString();
-                                  FocusScope.of(context).requestFocus(FocusNode());
-
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
                               }),
-        
+
                           /* TextFormField(
                               validator: (value) {
                                 if (value.isEmpty) {
@@ -970,9 +962,8 @@ print("insode if no access token ");
                               controller: description,
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
-        
                               decoration: InputDecoration(
-                                 labelText: 'Description',
+                                labelText: 'Description',
                                 hintText: "Description",
                                 border: InputBorder.none,
                                 fillColor: Colors.white,
@@ -1012,12 +1003,12 @@ print("insode if no access token ");
                                   industry.text,
                                   description.text);
                               _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                 backgroundColor: Color(maincolor),
+                                backgroundColor: Color(maincolor),
                                 content: Text("Lead creation in progress"),
                               ));
                             } else {
                               _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                 backgroundColor: Color(maincolor),
+                                backgroundColor: Color(maincolor),
                                 content: Text("One or more fields are empty"),
                               ));
                             }
