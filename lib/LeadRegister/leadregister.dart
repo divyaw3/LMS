@@ -32,7 +32,76 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
   String msg = "";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var lead_source = [];
+
+  var lead_status = [];
   var lead_accountindustries = [];
+  //var lead_setting =[];
+  Map lead_setting = {};
+  bool displaynotes = false;
+  Future getsettingdetails() async {
+    print("inside getsetting details");
+    Uri url = Uri.parse(siteurl + "api/lead/setting");
+
+    print("getsetting details" + url.toString());
+    print("accesstokenaccesstokensetting" + accesstoken.toString());
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accesstoken',
+    });
+    if (response.statusCode == 200) {
+      setState(() {
+        lead_setting = json.decode(response.body);
+        //  print("lead_settinglead_setting"+lead_setting.toString());
+if(lead_setting["notesactive"] == 0 ){
+setState(() {
+  displaynotes = false;
+});
+}
+else if (lead_setting["notesactive"] == 1) {
+setState(() {
+    displaynotes = true;
+
+});
+}
+        print("lead_settinglead_setting" + lead_setting['name'].toString());
+      });
+      print("respo.se.scode" + response.statusCode.toString());
+
+      return lead_setting;
+    } else {
+      print(json.decode(response.body).toString());
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  Future getleadstatus() async {
+    Uri url = Uri.parse(siteurl + "api/leadstatus");
+
+    print(url);
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accesstoken',
+    });
+    if (response.statusCode == 200) {
+      setState(() {
+        var resBody = json.decode(response.body);
+
+        lead_status = json.decode(response.body);
+      });
+
+      print("lead_status id is" + lead_status.toString());
+      print(lead_status.toString());
+      return lead_status;
+    } else {
+      print(json.decode(response.body).toString());
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
   Future getleadsource() async {
     //http://humbletree.in/lms/api/leadsources
 
@@ -111,11 +180,15 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
       fleadstate,
       fleadcountry,
       fleadpostalcode,
+      fopportunityamount,
       fsource,
+      fstatus,
       findustry,
-      fdescription) async {
+      fdescription,fnotes
+      
+      ) async {
     print(
-        "fname,femail,fphone,ftitle,fwebsite,fleadaddress,fleadcity,fleadstate,fleadcountry,fleadpostalcode,fsource,findustry,fdescription" +
+        "fname,femail,fphone,ftitle,fwebsite,fleadaddress,fleadcity,fleadstate,fleadcountry,fleadpostalcode,fopportunityamount,fsource,findustry,fdescription" +
             fname.toString() +
             femail.toString() +
             fphone.toString() +
@@ -126,9 +199,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
             fleadstate.toString() +
             fleadcountry.toString() +
             fleadpostalcode.toString() +
+            fopportunityamount.toString() +
             fsource.toString() +
+            fstatus.toString() +
             findustry.toString() +
-            fdescription.toString());
+            fdescription.toString()+fnotes.toString());
     var url = Uri.parse(siteurl + "api/leads/create");
 
     var response = await http.post(url, headers: {
@@ -148,9 +223,13 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
           "lead_state": fleadstate.toString(),
           "lead_country": fleadcountry.toString(),
           "lead_postalcode": fleadpostalcode.toString(),
+          "opportunity_amount": fopportunityamount.toString(),
+          //opportunityamount
           "source": fsource.toString(),
+          "status": fstatus.toString(),
           "industry": findustry.toString(),
           "description": fdescription.toString(),
+          "notes":fnotes.toString(),
           "location_longitude": widget.lang.toString(),
           "location_latitude": widget.lati.toString()
         });
@@ -205,10 +284,17 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
   TextEditingController leadcountry = TextEditingController();
   TextEditingController leadpostalcode = TextEditingController();
 
+  TextEditingController opportunityamount = TextEditingController();
+
   TextEditingController source = TextEditingController();
+
+  TextEditingController status = TextEditingController();
+  //status
   TextEditingController industry = TextEditingController();
 
   TextEditingController description = TextEditingController();
+
+  TextEditingController notes = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
   SharedPreferences sharedPreferences;
@@ -223,14 +309,48 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
       print("inside else" + accesstoken);
       getleadsource();
       getleadaccountindustries();
+      getsettingdetails();
+      getleadstatus();
       /*  Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) => new LeadlistScreen(),
     ));*/
     }
   }
 
+/*  if (_leadlist[i]['status'] == "0") {
+                setState(() {
+                  _leadlist[i]['status'] = "New";
+                  contcolor = Colors.blue;
+                });
+              } else if (_leadlist[i]['status'] == "1") {
+                setState(() {
+                  _leadlist[i]['status'] = "Assigned";
+                  //  contcolor = Colors.teal;
+                });
+              } else if (_leadlist[i]['status'] == "2") {
+                setState(() {
+                  _leadlist[i]['status'] = "In Process";
+                  // contcolor = Colors.orange;
+                });
+              } else if (_leadlist[i]['status'] == "3") {
+                setState(() {
+                  _leadlist[i]['status'] = "Converted";
+                  //  contcolor = Colors.red;
+                });
+              } else if (_leadlist[i]['status'] == "4") {
+                setState(() {
+                  _leadlist[i]['status'] = "Recycled";
+                  //   contcolor = Colors.red;
+                });
+              } else if (_leadlist[i]['status'] == "5") {
+                setState(() {
+                  _leadlist[i]['status'] = "Dead";
+                  //   contcolor = Colors.red;
+                });
+              } */
   void initState() {
     checkaccesstoken();
+    //getsettingdetails();
 
     print("widget.country.locality.subLocality.postalCode.street " +
         widget.country.toString() +
@@ -303,9 +423,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return "Please enter Name";
-                                }
+                                if (lead_setting['name'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter name";
+                                  }
+                                } else if (lead_setting['name'] == 0) {}
                               },
                               //  validator: validateEmail,
                               controller: name,
@@ -341,7 +463,25 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                                   return "Please enter email";
                                 }
                               },*/
-                              validator: validateEmail,
+                              validator: (value) {
+                                if (lead_setting['email'] == 1) {
+                                  Pattern pattern =
+                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                  RegExp regex = new RegExp(pattern);
+                                  if (!regex.hasMatch(value)) {
+                                    return 'Enter Valid Email';
+                                  } else {
+                                    return null;
+                                  }
+
+                                  //  ValidateEmail();
+                                } else if (lead_setting['email'] == 0) {
+                                  if (value.isEmpty) {
+                                    return "";
+                                  }
+                                }
+                              },
+                              // validator: validateEmail,
                               controller: email,
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
@@ -372,7 +512,27 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                                   return "Please Enter Phone";
                                 }
                               },*/
-                              validator: validateMobile,
+                              //alidator: validateMobile,
+                              validator: (value) {
+                                if (lead_setting['phone'] == 1) {
+                                  String patttern = r'(^[0-9]*$)';
+                                  RegExp regExp = new RegExp(patttern);
+                                  if (value.length == 0) {
+                                    return "Please enter the Mobile Number";
+                                  } else if (value.length != 10) {
+                                    return "Mobile number must 10 digits";
+                                  } else if (!regExp.hasMatch(value)) {
+                                    return "Mobile Number must be digits";
+                                  }
+                                  return null;
+
+                                  //  ValidateEmail();
+                                } else if (lead_setting['phone'] == 0) {
+                                  if (value.isEmpty) {
+                                    return "";
+                                  }
+                                }
+                              },
                               controller: phone,
 //                              minLines: 10,
                               maxLength: 10,
@@ -400,10 +560,17 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
-                              validator: (value) {
+                              /*    validator: (value) {
                                 if (value.isEmpty) {
                                   return "Please enter title";
                                 }
+                              },*/
+                              validator: (value) {
+                                if (lead_setting['title'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter title";
+                                  }
+                                } else if (lead_setting['title'] == 0) {}
                               },
                               controller: title,
                               //  autofocus:true,
@@ -434,6 +601,13 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                                   return "Please enter website";
                                 }
                               },*/
+                              validator: (value) {
+                                if (lead_setting['website'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter website";
+                                  }
+                                } else if (lead_setting['website'] == 0) {}
+                              },
                               controller: website,
                               //  autofocus:true,
                               keyboardType: TextInputType.name,
@@ -458,10 +632,17 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
-                              validator: (value) {
+                              /*  validator: (value) {
                                 if (value.isEmpty) {
                                   return "Please enter lead address";
                                 }
+                              },*/
+                              validator: (value) {
+                                if (lead_setting['lead_address'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter lead address";
+                                  }
+                                } else if (lead_setting['lead_address'] == 0) {}
                               },
                               controller: leadaddress,
                               //  autofocus:true,
@@ -488,9 +669,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return "Please enter city";
-                                }
+                                if (lead_setting['lead_city'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter city";
+                                  }
+                                } else if (lead_setting['lead_city'] == 0) {}
                               },
                               controller: leadcity,
                               //  autofocus:true,
@@ -732,9 +915,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return "Please enter state";
-                                }
+                                if (lead_setting['lead_state'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter state";
+                                  }
+                                } else if (lead_setting['lead_state'] == 0) {}
                               },
                               controller: leadstate,
                               //  autofocus:true,
@@ -761,9 +946,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return "Please enter country";
-                                }
+                                if (lead_setting['lead_country'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter country";
+                                  }
+                                } else if (lead_setting['lead_country'] == 0) {}
                               },
                               controller: leadcountry,
                               //  autofocus:true,
@@ -818,6 +1005,30 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                         color: Colors.grey[200],
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                              controller: opportunityamount,
+                              //  autofocus:true,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: 'Opportunity Amount',
+                                hintText: "Opportunity Amount",
+                                border: InputBorder.none,
+                                fillColor: Colors.white,
+                              )),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        color: Colors.grey[200],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                   //   labelText: 'Choose source ',
@@ -825,7 +1036,57 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                                       borderSide:
                                           BorderSide(color: Colors.grey[200]))),
                               hint: Text(
-                                  'Choose Source'), // Not necessary for Option 1
+                                  'Choose Status'), // Not necessary for Option 1
+                              //    value: _selecteditem,
+                              items: lead_status
+                                  .map<DropdownMenuItem<String>>((value) {
+                                //    print("newMap of onchanged" + newMap .toString());
+                                return DropdownMenuItem<String>(
+                                  child: Text(
+                                    value.toString(),
+                                    style: TextStyle(
+                                        fontSize: 15.0, color: Colors.black
+                                        //[
+                                        //700]
+                                        ),
+                                  ),
+                                  value: value.toString(),
+                                  //
+                                  //  value: value['slug'].toString()
+                                );
+
+                                // }
+                              }).toList(),
+                              validator: (value) => value == null
+                                  ? 'Kindly Choose a Status'
+                                  : null,
+                              onChanged: (newValue) {
+                                status.text = newValue.toString();
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                              }),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        color: Colors.grey[200],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                  //   labelText: 'Choose source ',
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey[200]))),
+                              hint: Text(
+                                  'Choose source'), // Not necessary for Option 1
                               //    value: _selecteditem,
                               items: lead_source
                                   .map<DropdownMenuItem<String>>((value) {
@@ -847,9 +1108,24 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                                 // }
                               }).toList(),
                               validator: (value) => value == null
-                                  ? 'Kindly Choose a Source'
+                                  ? 'Kindly Choose a source'
                                   : null,
                               onChanged: (newValue) {
+                                if (newValue == "New") {
+                                  status.text = "0";
+                                } else if (newValue == "Assigned") {
+                                  status.text = "1";
+                                } else if (status.text == "In Process") {
+                                  status.text = "2";
+                                } else if (status.text == "Converted") {
+                                  status.text = "3";
+                                } else if (status.text == "Recycled") {
+                                  setState(() {
+                                    status.text = "4";
+                                  });
+                                } else if (status.text == "Dead") {
+                                  status.text = "5";
+                                }
                                 source.text = newValue.toString();
                                 FocusScope.of(context)
                                     .requestFocus(FocusNode());
@@ -954,9 +1230,11 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return "Please enter description";
-                                }
+                                if (lead_setting['description'] == 1) {
+                                  if (value.isEmpty) {
+                                    return "Please enter description";
+                                  }
+                                } else if (lead_setting['description'] == 0) {}
                               },
                               maxLines: 5,
                               controller: description,
@@ -972,6 +1250,43 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                       ),
                     ),
                   ),
+                  
+                   Visibility(
+                     visible: displaynotes,
+                     child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          color: Colors.grey[200],
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                                validator: (value) {
+                                  if (lead_setting['notes'] == 1) {
+                                    if (value.isEmpty) {
+                                      return "Please enter notes";
+                                    }
+                                  } else if (lead_setting['notes'] == 0) {}
+                                },
+                                maxLines: 5,
+                                controller: notes,
+                                //  autofocus:true,
+                                keyboardType: TextInputType.name,
+                                decoration: InputDecoration(
+                                  labelText: 'Notes',
+                                  hintText: "Notes",
+                                  border: InputBorder.none,
+                                  fillColor: Colors.white,
+                                )),
+                          ),
+                        ),
+                      ),
+                                     ),
+                   ),
+                  
                   SizedBox(
                     height: 5.0,
                   ),
@@ -999,9 +1314,13 @@ class _LeadRegisterscreenState extends State<LeadRegisterscreen> {
                                   leadstate.text,
                                   leadcountry.text,
                                   leadpostalcode.text,
+                                  opportunityamount.text,
                                   source.text,
+                                  status.text,
                                   industry.text,
-                                  description.text);
+                                  description.text
+                                  ,
+                                  notes.text);
                               _scaffoldKey.currentState.showSnackBar(SnackBar(
                                 backgroundColor: Color(maincolor),
                                 content: Text("Lead creation in progress"),

@@ -42,33 +42,30 @@ print("insode if no access token ");
 
   }
 */
-var buttonname ="";
-   checkaccesstoken()  async {
-     Position position = await _getGeoLocationPosition();
-          location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
-        //  GetAddressFromLatLong(position);
-     sharedPreferences = await SharedPreferences.getInstance();
-       accesstoken = sharedPreferences.getString("access_token") ?? "_";
-    print("accesstoken"+accesstoken);
+  var buttonname = "";
+  checkaccesstoken() async {
+    //  GetAddressFromLatLong(position);
+    sharedPreferences = await SharedPreferences.getInstance();
+    accesstoken = sharedPreferences.getString("access_token") ?? "_";
+    print("accesstoken" + accesstoken);
 
-    if(accesstoken=="_"){
-print("insode if no access token ");
-setState(() {
-  buttonname ="Sign In";
-});
-
-    }
-    else{
-      print("inside else"+accesstoken);
+    if (accesstoken == "_") {
+      print("insode if no access token ");
       setState(() {
-  buttonname ="Lead";
-});
-    /*Navigator.of(context).pushReplacement(new MaterialPageRoute(
+        buttonname = "Sign In";
+      });
+    } else {
+      print("inside else" + accesstoken);
+      setState(() {
+        buttonname = "Lead";
+      });
+      /*Navigator.of(context).pushReplacement(new MaterialPageRoute(
       builder: (BuildContext context) => new LeadlistScreen(),
     ));*/
     }
-
+    approvegpsaccess();
   }
+
   String location = 'Null, Press Button';
   String Address = 'search';
 
@@ -138,10 +135,14 @@ setState(() {
 
   void initState() {
     checkaccesstoken();
-         
+
     super.initState();
   }
 
+  approvegpsaccess() async {
+    Position position = await _getGeoLocationPosition();
+          location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
+     }
   Widget renderNextBtn() {
     return Text("Next");
   }
@@ -173,12 +174,12 @@ setState(() {
   }
 
   final List<String> imgList = [
-   //img1,
-   img2,
-   img3,
-   img4,
-   img5,
-   img6
+    //img1,
+    img2,
+    img3,
+    img4,
+    img5,
+    img6
   ];
 
   final List<String> imgListtext = [
@@ -198,9 +199,9 @@ setState(() {
 
     return Scaffold(
         body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            //crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      mainAxisAlignment: MainAxisAlignment.center,
+      //crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         /* SizedBox(
           height: 30.0,
         ),*/
@@ -211,7 +212,7 @@ setState(() {
           child: CarouselSlider(
             // items: imageSliders,
             carouselController: _controller,
-        
+
             options: CarouselOptions(
               aspectRatio: 1.3,
               onPageChanged: (index, reason) {
@@ -231,7 +232,7 @@ setState(() {
                         // border: Border.all(color: Colors.black, width: 1.0),
                         //      borderRadius: BorderRadius.circular(70.0),
                         //  borderRadius: BorderRadius.all(Radius.circular(500)),
-        
+
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           image: AssetImage(item),
@@ -264,7 +265,7 @@ setState(() {
             );
           }).toList(),
         ),
-             /* Container(
+        /* Container(
           height: 100.0,
           child: ListView.builder(
             itemCount: imgListtext.length,
@@ -279,7 +280,7 @@ setState(() {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //
-          /*  Padding(
+            /*  Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
                 child: Container(
@@ -329,24 +330,22 @@ setState(() {
                   color: Color(maincolor),
                   child: TextButton(
                     onPressed: () {
-                      if(buttonname == "Sign In"){
+                      if (buttonname == "Sign In") {
                         print(buttonname.toString());
- Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => new Loginscreen(
-                        
-                          ))
-                          );
-                      }
-                      else if(buttonname == "Lead") {
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                new Loginscreen()));
+                      } else if (buttonname == "Lead") {
                         print(buttonname.toString());
-Navigator.of(context).pushReplacement(new MaterialPageRoute(
-      builder: (BuildContext context) => new LeadlistScreen(),
-    ));
+                        Navigator.of(context)
+                            .pushReplacement(new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new LeadlistScreen(),
+                        ));
                       }
-                       
                     },
                     child: Container(
-                                          //decoration: BoxDecoration(borderRadius: BorderRadius.circular(30.0)),
+                      //decoration: BoxDecoration(borderRadius: BorderRadius.circular(30.0)),
 
                       // color: Color(maincolor),
                       width: 200.0,
@@ -354,10 +353,9 @@ Navigator.of(context).pushReplacement(new MaterialPageRoute(
                           BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
                       alignment: Alignment.center,
                       child: Text(
-                      buttonname,
+                        buttonname,
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: Colors.white, fontSize: 15),
+                        style: TextStyle(color: Colors.white, fontSize: 15),
                       ),
                     ),
                     /*  Text("Sign in",
@@ -373,7 +371,7 @@ Navigator.of(context).pushReplacement(new MaterialPageRoute(
             ),
           ],
         ),
-            ],
-          ));
+      ],
+    ));
   }
 }

@@ -12,6 +12,7 @@ import 'package:ims/const/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:ims/leadedit/leadedit.dart';
 import 'package:ims/onboardscreen.dart';
+import 'package:ims/productlist/productlist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //import 'package:intl/intl.dart';
@@ -56,7 +57,7 @@ class _LeadlistScreenState extends State<LeadlistScreen> {
     } else {
       print(json.decode(response.body).toString());
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+      throw Exception('Failed to load post'+response.statusCode.toString());
     }
   }
 
@@ -641,6 +642,24 @@ InkWell(
                 Divider(
                             color: Colors.white
                             ,
+                          ),
+                            InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(new MaterialPageRoute(
+                                  builder: (BuildContext context) => new ProductlistScreen()));
+                            },
+                            child: ListTile(
+                              title: Text('Products',    style: new TextStyle(
+                                            fontSize: 18.0,
+                                             color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),),
+                              leading: Icon(FontAwesomeIcons.cube,color: Colors.white,),
+                              trailing: Icon(FontAwesomeIcons.angleRight,color: Colors.white,),
+                            ),
+                          ),
+                           Divider(
+                            color: Colors.white,
                           ),
                           InkWell(
                             onTap: () {
